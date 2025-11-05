@@ -1,0 +1,125 @@
+version: '3.8'
+
+services:
+  # Auth Server Application
+  auth-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: auth-server
+    ports:
+      - "7000:7000"
+    environment:
+      # Spring Configuration
+      - SPRING_APPLICATION_NAME=auth-app
+      
+      # Redis Configuration (use local Redis or external)
+      - REDIS_URL=${REDIS_URL:-redis://redis:6379}
+      
+      # Zitadel Configuration
+      - ZITADEL_INSTANCE_URL=${ZITADEL_INSTANCE_URL}
+      - ZITADEL_ACCESS_TOKEN=${ZITADEL_ACCESS_TOKEN}
+      - ZITADEL_ENABLE_BETA=${ZITADEL_ENABLE_BETA:-true}
+      - ZITADEL_MANAGEMENT_TOKEN=${ZITADEL_MANAGEMENT_TOKEN}
+      
+      # Cookie Security (set to true in production with HTTPS)
+      - COOKIE_SECURE=${COOKIE_SECURE:-false}
+      - COOKIE_SAME_SITE=${COOKIE_SAME_SITE:-Lax}
+      
+      # CORS Configuration
+      - CORS_ALLOWED_ORIGINS=${CORS_ALLOWED_ORIGINS:-http://localhost:3000,http://localhost:3001,http://localhost:5173}
+      
+      # Vendor Configuration
+      - VENDOR_ISSUER=${VENDOR_ISSUER}
+      - VENDOR_ORGANIZATION_ID=${VENDOR_ORGANIZATION_ID}
+      - VENDOR_CLIENT_ID=${VENDOR_CLIENT_ID}
+      - VENDOR_CLIENT_SECRET=${VENDOR_CLIENT_SECRET}
+      - VENDOR_REDIRECT_URI=${VENDOR_REDIRECT_URI}
+      - VENDOR_LOGOUT_REDIRECT_URI=${VENDOR_LOGOUT_REDIRECT_URI}
+      - VENDOR_PROJECT_ID=${VENDOR_PROJECT_ID}
+      - VENDOR_MANAGEMENT_TOKEN=${VENDOR_MANAGEMENT_TOKEN}
+      - VENDOR_SESSION_ID_NAME=${VENDOR_SESSION_ID_NAME}
+      - VENDOR_AFTER_LOGIN_REDIRECT_URI=${VENDOR_AFTER_LOGIN_REDIRECT_URI}
+      
+      # Consumer Configuration
+      - CONSUMER_ISSUER=${CONSUMER_ISSUER}
+      - CONSUMER_ORGANIZATION_ID=${CONSUMER_ORGANIZATION_ID}
+      - CONSUMER_CLIENT_ID=${CONSUMER_CLIENT_ID}
+      - CONSUMER_CLIENT_SECRET=${CONSUMER_CLIENT_SECRET}
+      - CONSUMER_REDIRECT_URI=${CONSUMER_REDIRECT_URI}
+      - CONSUMER_LOGOUT_REDIRECT_URI=${CONSUMER_LOGOUT_REDIRECT_URI}
+      - CONSUMER_PROJECT_ID=${CONSUMER_PROJECT_ID}
+      - CONSUMER_MANAGEMENT_TOKEN=${CONSUMER_MANAGEMENT_TOKEN}
+      - CONSUMER_SESSION_ID_NAME=${CONSUMER_SESSION_ID_NAME}
+      - CONSUMER_AFTER_LOGIN_REDIRECT_URI=${CONSUMER_AFTER_LOGIN_REDIRECT_URI}
+      
+      # Affiliate Configuration
+      - AFFILIATE_ISSUER=${AFFILIATE_ISSUER}
+      - AFFILIATE_ORGANIZATION_ID=${AFFILIATE_ORGANIZATION_ID}
+      - AFFILIATE_CLIENT_ID=${AFFILIATE_CLIENT_ID}
+      - AFFILIATE_CLIENT_SECRET=${AFFILIATE_CLIENT_SECRET}
+      - AFFILIATE_REDIRECT_URI=${AFFILIATE_REDIRECT_URI}
+      - AFFILIATE_LOGOUT_REDIRECT_URI=${AFFILIATE_LOGOUT_REDIRECT_URI}
+      - AFFILIATE_PROJECT_ID=${AFFILIATE_PROJECT_ID}
+      - AFFILIATE_MANAGEMENT_TOKEN=${AFFILIATE_MANAGEMENT_TOKEN}
+      - AFFILIATE_SESSION_ID_NAME=${AFFILIATE_SESSION_ID_NAME}
+      - AFFILIATE_AFTER_LOGIN_REDIRECT_URI=${AFFILIATE_AFTER_LOGIN_REDIRECT_URI}
+      
+      # GMS Configuration
+      - GMS_ISSUER=${GMS_ISSUER}
+      - GMS_ORGANIZATION_ID=${GMS_ORGANIZATION_ID}
+      - GMS_CLIENT_ID=${GMS_CLIENT_ID}
+      - GMS_CLIENT_SECRET=${GMS_CLIENT_SECRET}
+      - GMS_REDIRECT_URI=${GMS_REDIRECT_URI}
+      - GMS_LOGOUT_REDIRECT_URI=${GMS_LOGOUT_REDIRECT_URI}
+      - GMS_PROJECT_ID=${GMS_PROJECT_ID}
+      - GMS_MANAGEMENT_TOKEN=${GMS_MANAGEMENT_TOKEN}
+      - GMS_SESSION_ID_NAME=${GMS_SESSION_ID_NAME}
+      - GMS_AFTER_LOGIN_REDIRECT_URI=${GMS_AFTER_LOGIN_REDIRECT_URI}
+      
+      # JVM Options
+      - JAVA_OPTS=-XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0
+    
+    depends_on:
+      redis:
+        condition: service_healthy
+    
+    restart: unless-stopped
+    
+    networks:
+      - auth-network
+    
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 60s
+    # Note: Container internal port is still 8080, external access via port 7000
+
+  # Redis Service (Optional - remove if using external Redis)
+  redis:
+    image: redis:7-alpine
+    container_name: auth-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    command: redis-server --appendonly yes
+    restart: unless-stopped
+    networks:
+      - auth-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+
+networks:
+  auth-network:
+    driver: bridge
+
+volumes:
+  redis-data:
+    driver: local
+

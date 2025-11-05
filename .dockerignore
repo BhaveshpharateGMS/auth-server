@@ -1,0 +1,46 @@
+﻿# Version Control
+.git
+.gitignore
+.gitattributes
+
+# IDE
+.idea
+.vscode
+*.iml
+*.iws
+
+# Build outputs
+target/
+*.class
+
+# Logs
+*.log
+logs/
+
+# Environment files (should be passed as env vars)
+.env
+*.env
+
+# Documentation
+*.md
+HELP.md
+IMPLEMENTATION_SUMMARY.md
+MIGRATION_SUMMARY.md
+COOKIE_SECURITY_UPDATE.txt
+
+# OS files
+.DS_Store
+Thumbs.db
+*.swp
+*.bak
+
+# Maven wrapper (already copied explicitly)
+.mvn/wrapper/maven-wrapper.jar
+
+# Test files
+src/test/
+
+# Docker files
+Dockerfile
+docker-compose.yml
+.dockerignore
