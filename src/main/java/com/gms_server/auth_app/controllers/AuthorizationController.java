@@ -8,10 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
@@ -29,12 +26,12 @@ public class AuthorizationController {
         this.objectMapper = objectMapper;
     }
 
-    @PostMapping("/{persona}")
+    @GetMapping("/{persona}")
     public ResponseEntity<Map<String, Object>> verifyPersona(
             @PathVariable String persona,
             HttpServletRequest request) {
 
-        logger.info("Received verification request for persona: {}", persona);
+        logger.info("🔐 [CONTROLLER] Received verification request for persona: {}", persona);
 
         try {
             Map<String, Object> userInfo = authorizationService.verifyPersonaAuthorization(persona, request);
@@ -44,13 +41,13 @@ public class AuthorizationController {
             String userEmail = userInfo.get("email") != null ? userInfo.get("email").toString() : "";
             String userInfoJson = objectMapper.writeValueAsString(userInfo);
 
-            // Create response headers for nginx
+            // Create response headers for nginx auth_request
             HttpHeaders headers = new HttpHeaders();
             headers.set("X-User-Id", userId);
             headers.set("X-User-Email", userEmail);
             headers.set("X-User-Info", userInfoJson);
 
-            logger.info("Authorization successful for persona: {}, userId: {}", persona, userId);
+            logger.info("✅ [CONTROLLER] Authorization successful for persona: {}, userId: {}", persona, userId);
 
             return ResponseEntity.ok()
                     .headers(headers)
@@ -62,14 +59,21 @@ public class AuthorizationController {
                     ));
 
         } catch (AuthorizationService.AuthorizationException e) {
-            logger.error("Authorization failed for persona {}: {}", persona, e.getMessage());
+            logger.error("❌ [CONTROLLER] Authorization failed for persona {}: {}", persona, e.getMessage());
             return ResponseEntity.status(e.getStatusCode())
-                    .body(Map.of("error", e.getMessage()));
+                    .body(Map.of(
+                            "error", e.getMessage(),
+                            "persona", persona,
+                            "status", e.getStatusCode()
+                    ));
 
         } catch (Exception e) {
-            logger.error("Unexpected error during authorization for persona: {}", persona, e);
+            logger.error("❌ [CONTROLLER] Unexpected error during authorization for persona: {}", persona, e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of("error", "Authorization failed"));
+                    .body(Map.of(
+                            "error", "Authorization failed",
+                            "persona", persona
+                    ));
         }
     }
 }

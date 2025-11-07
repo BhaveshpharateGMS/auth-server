@@ -17,13 +17,13 @@ public class ZitadelSdkConfig {
     
     private static final Logger logger = LoggerFactory.getLogger(ZitadelSdkConfig.class);
     
-    @Value("${zitadel.instance-url}")
+    @Value("${zitadel.instance-url:https://zitadel-gms-7a6uvy.us1.zitadel.cloud}")
     private String instanceUrl;
     
     @Value("${zitadel.key-file-path:}")
     private String keyFilePath;
     
-    @Value("${zitadel.access-token:}")
+    @Value("${zitadel.access-token:YbYMne1IUxMs7B8O2eAivrEjd6Yg54tJdAfF65EXqVmw8u9dlJcjepi1RWrrm6ksXvQWPMk}")
     private String accessToken;
     
     /**

@@ -139,4 +139,59 @@ public class RedisService {
             throw new RuntimeException("Redis operation failed", e);
         }
     }
+
+    // -------- ATOMIC INCREMENT --------
+    /**
+     * Atomically increment a key's value by 1
+     * If key doesn't exist, it will be created with value 1
+     * This operation is atomic and thread-safe
+     * 
+     * @param key Redis key
+     * @return The new value after increment
+     */
+    public Long increment(String key) {
+        try {
+            Long newValue = redisTemplate.opsForValue().increment(key);
+            logger.debug("🔢 [REDIS-INCR] Key: {} | New Value: {}", key, newValue);
+            return newValue;
+        } catch (Exception e) {
+            logger.error("Error incrementing Redis key: {}", key, e);
+            throw new RuntimeException("Redis operation failed", e);
+        }
+    }
+
+    /**
+     * Atomically increment a key's value by delta
+     * If key doesn't exist, it will be created with value = delta
+     * This operation is atomic and thread-safe
+     * 
+     * @param key Redis key
+     * @param delta Amount to increment by
+     * @return The new value after increment
+     */
+    public Long incrementBy(String key, long delta) {
+        try {
+            Long newValue = redisTemplate.opsForValue().increment(key, delta);
+            logger.debug("🔢 [REDIS-INCR] Key: {} | Delta: {} | New Value: {}", key, delta, newValue);
+            return newValue;
+        } catch (Exception e) {
+            logger.error("Error incrementing Redis key: {}", key, e);
+            throw new RuntimeException("Redis operation failed", e);
+        }
+    }
+
+    /**
+     * Get time-to-live (TTL) for a key in seconds
+     * 
+     * @param key Redis key
+     * @return TTL in seconds, -1 if key exists but has no expiry, -2 if key doesn't exist
+     */
+    public Long getTTL(String key) {
+        try {
+            return redisTemplate.getExpire(key, TimeUnit.SECONDS);
+        } catch (Exception e) {
+            logger.error("Error getting TTL for Redis key: {}", key, e);
+            return -2L;
+        }
+    }
 }

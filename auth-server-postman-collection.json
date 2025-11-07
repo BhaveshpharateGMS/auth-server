@@ -1,0 +1,500 @@
+{
+	"info": {
+		"_postman_id": "auth-server-collection-001",
+		"name": "Auth Server - Complete API Collection",
+		"description": "Complete test collection for auth-server with rate limiting, authentication, and authorization endpoints",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:7000",
+			"type": "string"
+		},
+		{
+			"key": "vendor_session_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "consumer_session_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "affiliate_session_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "gms_session_id",
+			"value": "",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "Health Check",
+			"item": [
+				{
+					"name": "Actuator Health",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/actuator/health",
+							"host": ["{{base_url}}"],
+							"path": ["actuator", "health"]
+						},
+						"description": "Check if the service is up and running"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Authentication - Start",
+			"item": [
+				{
+					"name": "Start Vendor Auth",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/auth/start/vendor",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "auth", "start", "vendor"]
+						},
+						"description": "Initiates vendor authentication flow. Will redirect to Zitadel login page."
+					},
+					"response": []
+				},
+				{
+					"name": "Start Consumer Auth",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/auth/start/consumer",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "auth", "start", "consumer"]
+						},
+						"description": "Initiates consumer authentication flow. Will redirect to Zitadel login page."
+					},
+					"response": []
+				},
+				{
+					"name": "Start Affiliate Auth",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/auth/start/affiliate",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "auth", "start", "affiliate"]
+						},
+						"description": "Initiates affiliate authentication flow. Will redirect to Zitadel login page."
+					},
+					"response": []
+				},
+				{
+					"name": "Start GMS Auth",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/auth/start/gms",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "auth", "start", "gms"]
+						},
+						"description": "Initiates GMS authentication flow. Will redirect to Zitadel login page."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Authorization - Verify",
+			"item": [
+				{
+					"name": "Verify Vendor Session",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "vendor_session_id={{vendor_session_id}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/verify/vendor",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "verify", "vendor"]
+						},
+						"description": "Verify vendor session and get user info. Requires valid vendor_session_id cookie."
+					},
+					"response": []
+				},
+				{
+					"name": "Verify Consumer Session",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "consumer_session_id={{consumer_session_id}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/verify/consumer",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "verify", "consumer"]
+						},
+						"description": "Verify consumer session and get user info. Requires valid consumer_session_id cookie."
+					},
+					"response": []
+				},
+				{
+					"name": "Verify Affiliate Session",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "affiliate_session_id={{affiliate_session_id}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/verify/affiliate",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "verify", "affiliate"]
+						},
+						"description": "Verify affiliate session and get user info. Requires valid affiliate_session_id cookie."
+					},
+					"response": []
+				},
+				{
+					"name": "Verify GMS Session",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "gms_session_id={{gms_session_id}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/verify/gms",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "verify", "gms"]
+						},
+						"description": "Verify GMS session and get user info. Requires valid gms_session_id cookie."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Logout",
+			"item": [
+				{
+					"name": "Logout Vendor",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "vendor_session_id={{vendor_session_id}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/auth/logout/vendor",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "auth", "logout", "vendor"]
+						},
+						"description": "Logout vendor user and clear session"
+					},
+					"response": []
+				},
+				{
+					"name": "Logout Consumer",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "consumer_session_id={{consumer_session_id}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/auth/logout/consumer",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "auth", "logout", "consumer"]
+						},
+						"description": "Logout consumer user and clear session"
+					},
+					"response": []
+				},
+				{
+					"name": "Logout Affiliate",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "affiliate_session_id={{affiliate_session_id}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/auth/logout/affiliate",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "auth", "logout", "affiliate"]
+						},
+						"description": "Logout affiliate user and clear session"
+					},
+					"response": []
+				},
+				{
+					"name": "Logout GMS",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "gms_session_id={{gms_session_id}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/auth/logout/gms",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "auth", "logout", "gms"]
+						},
+						"description": "Logout GMS user and clear session"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Rate Limiting Tests",
+			"item": [
+				{
+					"name": "Test Rate Limit - Request 1",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/auth/start/vendor",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "auth", "start", "vendor"]
+						},
+						"description": "Request 1/10 - Should pass"
+					},
+					"response": []
+				},
+				{
+					"name": "Test Rate Limit - Request 2",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/auth/start/vendor",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "auth", "start", "vendor"]
+						},
+						"description": "Request 2/10 - Should pass"
+					},
+					"response": []
+				},
+				{
+					"name": "Test Rate Limit - Request 3",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/auth/start/vendor",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "auth", "start", "vendor"]
+						},
+						"description": "Request 3/10 - Should pass"
+					},
+					"response": []
+				},
+				{
+					"name": "Test Rate Limit - Request 4",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/auth/start/vendor",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "auth", "start", "vendor"]
+						},
+						"description": "Request 4/10 - Should pass"
+					},
+					"response": []
+				},
+				{
+					"name": "Test Rate Limit - Request 5",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/auth/start/vendor",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "auth", "start", "vendor"]
+						},
+						"description": "Request 5/10 - Should pass"
+					},
+					"response": []
+				},
+				{
+					"name": "Test Rate Limit - Request 6",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/auth/start/vendor",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "auth", "start", "vendor"]
+						},
+						"description": "Request 6/10 - Should pass"
+					},
+					"response": []
+				},
+				{
+					"name": "Test Rate Limit - Request 7",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/auth/start/vendor",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "auth", "start", "vendor"]
+						},
+						"description": "Request 7/10 - Should pass"
+					},
+					"response": []
+				},
+				{
+					"name": "Test Rate Limit - Request 8",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/auth/start/vendor",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "auth", "start", "vendor"]
+						},
+						"description": "Request 8/10 - Should pass"
+					},
+					"response": []
+				},
+				{
+					"name": "Test Rate Limit - Request 9",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/auth/start/vendor",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "auth", "start", "vendor"]
+						},
+						"description": "Request 9/10 - Should pass"
+					},
+					"response": []
+				},
+				{
+					"name": "Test Rate Limit - Request 10",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/auth/start/vendor",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "auth", "start", "vendor"]
+						},
+						"description": "Request 10/10 - Last allowed request"
+					},
+					"response": []
+				},
+				{
+					"name": "Test Rate Limit - Request 11 (Should Fail)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/auth/start/vendor",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "auth", "start", "vendor"]
+						},
+						"description": "Request 11/10 - Should return 429 Too Many Requests"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Error Cases",
+			"item": [
+				{
+					"name": "Invalid Persona",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/auth/start/invalid",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "auth", "start", "invalid"]
+						},
+						"description": "Test with invalid persona - should return 400 Bad Request"
+					},
+					"response": []
+				},
+				{
+					"name": "Verify Without Session",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/verify/vendor",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "verify", "vendor"]
+						},
+						"description": "Verify without session cookie - should return 401 Unauthorized"
+					},
+					"response": []
+				},
+				{
+					"name": "Verify With Invalid Session",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "vendor_session_id=invalid-session-id-12345",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/verify/vendor",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "verify", "vendor"]
+						},
+						"description": "Verify with invalid session - should return 401 Unauthorized"
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
+
